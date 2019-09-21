@@ -3,25 +3,18 @@
 //  Purchases
 //
 //  Created by Jacob Eiting on 9/30/17.
-//  Copyright © 2018 RevenueCat, Inc. All rights reserved.
+//  Copyright © 2019 RevenueCat, Inc. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
 #import "RCPurchases.h"
+#import "RCEntitlement.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class RCPurchaserInfo, RCHTTPClient, RCIntroEligibility, RCEntitlement;
-
-FOUNDATION_EXPORT NSErrorDomain const RCBackendErrorDomain;
-
-NS_ERROR_ENUM(RCBackendErrorDomain) {
-    RCFinishableError = 0,
-    RCUnfinishableError,
-    RCUnexpectedBackendResponse 
-};
+@class RCPurchaserInfo, RCHTTPClient, RCIntroEligibility, RCEntitlement, RCPromotionalOffer;
 
 typedef NS_ENUM(NSInteger, RCPaymentMode) {
     RCPaymentModeNone = -1,
@@ -33,13 +26,19 @@ typedef NS_ENUM(NSInteger, RCPaymentMode) {
 API_AVAILABLE(ios(11.2), macos(10.13.2))
 RCPaymentMode RCPaymentModeFromSKProductDiscountPaymentMode(SKProductDiscountPaymentMode paymentMode);
 
-typedef void(^RCBackendResponseHandler)(RCPurchaserInfo * _Nullable,
+typedef void(^RCBackendPurchaserInfoResponseHandler)(RCPurchaserInfo * _Nullable,
                                         NSError * _Nullable);
 
 typedef void(^RCIntroEligibilityResponseHandler)(NSDictionary<NSString *,
                                                  RCIntroEligibility *> *);
 
-typedef void(^RCEntitlementResponseHandler)(NSDictionary<NSString *, RCEntitlement *> * _Nullable);
+typedef void(^RCEntitlementResponseHandler)(RCEntitlements * _Nullable, NSError * _Nullable);
+
+typedef void(^RCOfferSigningResponseHandler)(NSString * _Nullable signature,
+                                             NSString * _Nullable keyIdentifier,
+                                             NSUUID * _Nullable nonce,
+                                             NSNumber * _Nullable timestamp,
+                                             NSError * _Nullable error);
 
 @interface RCBackend : NSObject
 
@@ -56,10 +55,12 @@ typedef void(^RCEntitlementResponseHandler)(NSDictionary<NSString *, RCEntitleme
             paymentMode:(RCPaymentMode)paymentMode
       introductoryPrice:(NSDecimalNumber * _Nullable)introductoryPrice
            currencyCode:(NSString * _Nullable)currencyCode
-             completion:(RCBackendResponseHandler)completion;
+      subscriptionGroup:(NSString * _Nullable)subscriptionGroup
+              discounts:(NSArray<RCPromotionalOffer *> * _Nullable)discounts
+             completion:(RCBackendPurchaserInfoResponseHandler)completion;
 
 - (void)getSubscriberDataWithAppUserID:(NSString *)appUserID
-                            completion:(RCBackendResponseHandler)completion;
+                            completion:(RCBackendPurchaserInfoResponseHandler)completion;
 
 - (void)getIntroEligibilityForAppUserID:(NSString *)appUserID
                             receiptData:(NSData *)receiptData
@@ -71,11 +72,19 @@ typedef void(^RCEntitlementResponseHandler)(NSDictionary<NSString *, RCEntitleme
 
 - (void)postAttributionData:(NSDictionary *)data
                 fromNetwork:(RCAttributionNetwork)network
-               forAppUserID:(NSString *)appUserID;
+               forAppUserID:(NSString *)appUserID
+                 completion:(void (^ _Nullable)(NSError * _Nullable error))completion;
 
 - (void)createAliasForAppUserID:(NSString *)appUserID
                withNewAppUserID:(NSString *)newAppUserID
                      completion:(void (^ _Nullable)(NSError * _Nullable error))completion;
+
+- (void)postOfferForSigning:(NSString *)offerIdentifier
+      withProductIdentifier:(NSString *)productIdentifier
+          subscriptionGroup:(NSString *)subscriptionGroup
+                receiptData:(NSData *)data
+                  appUserID:(NSString *)applicationUsername
+                 completion:(RCOfferSigningResponseHandler)completion;
 
 @end
 

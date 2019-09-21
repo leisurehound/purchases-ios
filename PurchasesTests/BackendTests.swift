@@ -3,7 +3,7 @@
 //  PurchasesTests
 //
 //  Created by Jacob Eiting on 9/30/17.
-//  Copyright © 2018 Purchases. All rights reserved.
+//  Copyright © 2019 RevenueCat, Inc. All rights reserved.
 //
 
 import Foundation
@@ -72,6 +72,7 @@ class BackendTests: XCTestCase {
     ]
 
     let serverErrorResponse = [
+        "code": "7225",
         "message": "something is bad up in the cloud"
     ]
 
@@ -90,7 +91,7 @@ class BackendTests: XCTestCase {
 
         let isRestore = arc4random_uniform(2) == 0
 
-        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, completion: { (purchaserInfo, error) in
+        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts:nil, completion: { (purchaserInfo, error) in
             completionCalled = true
         })
 
@@ -98,7 +99,7 @@ class BackendTests: XCTestCase {
             "app_user_id": userID,
             "fetch_token": receiptData.base64EncodedString(),
             "is_restore": isRestore
-            ], headers: ["Authorization": "Basic " + apiKey])
+            ], headers: ["Authorization": "Bearer " + apiKey])
 
         expect(self.httpClient.calls.count).to(equal(1))
         if self.httpClient.calls.count > 0 {
@@ -123,11 +124,11 @@ class BackendTests: XCTestCase {
 
         let isRestore = arc4random_uniform(2) == 0
 
-        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, completion: { (purchaserInfo, error) in
+        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, error) in
             completionCalled += 1
         })
 
-        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, completion: { (purchaserInfo, error) in
+        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, error) in
             completionCalled += 1
         })
 
@@ -143,11 +144,11 @@ class BackendTests: XCTestCase {
 
         let isRestore = arc4random_uniform(2) == 0
 
-        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, completion: { (purchaserInfo, error) in
+        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, error) in
             completionCalled += 1
         })
 
-        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: !isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, completion: { (purchaserInfo, error) in
+        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: !isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, error) in
             completionCalled += 1
         })
 
@@ -163,11 +164,11 @@ class BackendTests: XCTestCase {
 
         let isRestore = arc4random_uniform(2) == 0
 
-        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, completion: { (purchaserInfo, error) in
+        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, error) in
             completionCalled += 1
         })
 
-        backend?.postReceiptData(receiptData2, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, completion: { (purchaserInfo, error) in
+        backend?.postReceiptData(receiptData2, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, error) in
             completionCalled += 1
         })
 
@@ -183,16 +184,44 @@ class BackendTests: XCTestCase {
 
         let isRestore = arc4random_uniform(2) == 0
 
-        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, completion: { (purchaserInfo, error) in
+        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, error) in
             completionCalled += 1
         })
 
-        backend?.postReceiptData(receiptData2, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: "USD", completion: { (purchaserInfo, error) in
+        backend?.postReceiptData(receiptData2, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: "USD", subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, error) in
             completionCalled += 1
         })
 
         expect(self.httpClient.calls.count).to(equal(2))
         expect(completionCalled).toEventually(equal(2))
+    }
+    
+    func testCachesSubscriberGetsForSameSubscriber() {
+        let response = HTTPResponse(statusCode: 200, response: validSubscriberResponse, error: nil)
+        httpClient.mock(requestPath: "/subscribers/" + userID, response: response)
+        
+        backend?.getSubscriberData(withAppUserID: userID, completion: { (newPurchaserInfo, newError) in
+        })
+        
+        backend?.getSubscriberData(withAppUserID: userID, completion: { (newPurchaserInfo, newError) in
+        })
+        
+        expect(self.httpClient.calls.count).to(equal(1))
+    }
+    
+    func testDoesntCacheSubscriberGetsForSameSubscriber() {
+        let response = HTTPResponse(statusCode: 200, response: validSubscriberResponse, error: nil)
+        let userID2 = "user_id_2"
+        httpClient.mock(requestPath: "/subscribers/" + userID, response: response)
+        httpClient.mock(requestPath: "/subscribers/" + userID2, response: response)
+        
+        backend?.getSubscriberData(withAppUserID: userID, completion: { (newPurchaserInfo, newError) in
+        })
+        
+        backend?.getSubscriberData(withAppUserID: userID2, completion: { (newPurchaserInfo, newError) in
+        })
+        
+        expect(self.httpClient.calls.count).to(equal(2))
     }
 
     func testPostsReceiptDataWithProductInfoCorrectly() {
@@ -201,19 +230,22 @@ class BackendTests: XCTestCase {
 
         let productIdentifier = "a_great_product"
         let price = 4.99 as NSDecimalNumber
+        let group = "sub_group"
 
         let currencyCode = "BFD"
 
         let paymentMode = RCPaymentMode.none
 
         var completionCalled = false
-
+        
         backend?.postReceiptData(receiptData, appUserID: userID,
                                  isRestore: false,
                                  productIdentifier: productIdentifier,
                                  price: price, paymentMode: paymentMode,
                                  introductoryPrice: nil,
                                  currencyCode: currencyCode,
+                                 subscriptionGroup: group,
+                                 discounts: nil,
                                  completion: { (purchaserInfo, error) in
             completionCalled = true
         })
@@ -224,11 +256,12 @@ class BackendTests: XCTestCase {
             "is_restore": false,
             "product_id": productIdentifier,
             "price": price,
-            "currency": currencyCode
+            "currency": currencyCode,
+            "subscription_group_id": group
         ]
 
         let expectedCall = HTTPRequest(HTTPMethod: "POST", path: "/receipts",
-                                       body: body , headers: ["Authorization": "Basic " + apiKey])
+                                       body: body , headers: ["Authorization": "Bearer " + apiKey])
 
         expect(self.httpClient.calls.count).to(equal(1))
 
@@ -252,7 +285,7 @@ class BackendTests: XCTestCase {
 
         var completionCalled = false
 
-        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: false, productIdentifier: "product_id", price: 9.99, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, completion: { (purchaserInfo, error) in
+        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: false, productIdentifier: "product_id", price: 9.99, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, error) in
             completionCalled = true
         })
 
@@ -272,6 +305,8 @@ class BackendTests: XCTestCase {
                                  price: 2.99, paymentMode: paymentMode,
                                  introductoryPrice: 1.99,
                                  currencyCode: "USD",
+                                 subscriptionGroup: "group",
+                                 discounts: nil,
                                  completion: { (purchaserInfo, error) in
                                     completionCalled = true
         })
@@ -310,21 +345,24 @@ class BackendTests: XCTestCase {
         checkCall(expectedValue: 2)
     }
 
-    func testForwards500ErrorsCorrectly() {
+    func testForwards500ErrorsCorrectlyForPurchaserInfoCalls() {
         let response = HTTPResponse(statusCode: 501, response: serverErrorResponse, error: nil)
         httpClient.mock(requestPath: "/receipts", response: response)
 
-        var error: Error?
-
+        var error: NSError?
+        var underlyingError: NSError?
         backend?.postReceiptData(receiptData, appUserID: userID, isRestore: false, productIdentifier: nil,
-                                 price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil,
-                                 completion: { (purchaserInfo, newError) in
-            error = newError
+                                 price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, newError) in
+            error = newError as NSError?
+            underlyingError = error?.userInfo[NSUnderlyingErrorKey] as! NSError?
         })
 
         expect(error).toEventuallyNot(beNil())
-        expect(error?.localizedDescription).to(equal(serverErrorResponse["message"]))
-        expect((error as NSError?)?.code).to(equal(RCUnfinishableError))
+        expect(error?.code).toEventually(be(PurchasesErrorCode.invalidCredentialsError.rawValue))
+        expect(error?.userInfo["finishable"]).to(be(false))
+
+        expect(underlyingError).toEventuallyNot(beNil())
+        expect(underlyingError?.localizedDescription).to(equal(serverErrorResponse["message"]))
     }
 
     func testForwards400ErrorsCorrectly() {
@@ -332,25 +370,30 @@ class BackendTests: XCTestCase {
         httpClient.mock(requestPath: "/receipts", response: response)
 
         var error: Error?
+        var underlyingError: Error?
 
         backend?.postReceiptData(receiptData, appUserID: userID, isRestore: false, productIdentifier: nil,
-                                 price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, completion: { (purchaserInfo, newError) in
+                                 price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, newError) in
             error = newError
         })
 
         expect(error).toEventuallyNot(beNil())
-        expect(error?.localizedDescription).to(equal(serverErrorResponse["message"]))
-        expect((error as NSError?)?.code).to(equal(RCFinishableError))
+        expect((error as NSError?)?.code).toEventually(be(PurchasesErrorCode.invalidCredentialsError.rawValue))
+        expect((error as NSError?)?.userInfo["finishable"]).to(be(true))
+
+        underlyingError = (error as NSError?)?.userInfo[NSUnderlyingErrorKey] as? Error
+        expect(underlyingError).toEventuallyNot(beNil())
+        expect(underlyingError?.localizedDescription).to(equal(serverErrorResponse["message"]))
     }
 
     func testPostingReceiptCreatesASubscriberInfoObject() {
         let response = HTTPResponse(statusCode: 200, response: validSubscriberResponse, error: nil)
         httpClient.mock(requestPath: "/receipts", response: response)
 
-        var purchaserInfo: RCPurchaserInfo?
+        var purchaserInfo: PurchaserInfo?
 
         backend?.postReceiptData(receiptData, appUserID: userID, isRestore: false, productIdentifier: nil,
-                                 price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil,
+                                 price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil,
                                  completion: { (newPurchaserInfo, newError) in
             purchaserInfo = newPurchaserInfo
         })
@@ -378,7 +421,7 @@ class BackendTests: XCTestCase {
             XCTAssertEqual(call.HTTPMethod, "GET")
             XCTAssertNil(call.body)
             XCTAssertNotNil(call.headers?["Authorization"])
-            XCTAssertEqual(call.headers?["Authorization"], "Basic " + apiKey)
+            XCTAssertEqual(call.headers?["Authorization"], "Bearer " + apiKey)
         }
     }
 
@@ -386,7 +429,7 @@ class BackendTests: XCTestCase {
         let response = HTTPResponse(statusCode: 200, response: validSubscriberResponse, error: nil)
         httpClient.mock(requestPath: "/subscribers/" + userID, response: response)
 
-        var subscriberInfo: RCPurchaserInfo?
+        var subscriberInfo: PurchaserInfo?
 
         backend?.getSubscriberData(withAppUserID: userID, completion: { (newSubscriberInfo, newError) in
             subscriberInfo = newSubscriberInfo
@@ -402,7 +445,7 @@ class BackendTests: XCTestCase {
         httpClient.mock(requestPath: "/subscribers/" + encodedUserID, response: response)
         httpClient.mock(requestPath: "/subscribers/" + encodeableUserID, response: HTTPResponse(statusCode: 404, response: nil, error: nil))
 
-        var subscriberInfo: RCPurchaserInfo?
+        var subscriberInfo: PurchaserInfo?
 
         backend?.getSubscriberData(withAppUserID: encodeableUserID, completion: { (newSubscriberInfo, newError) in
             subscriberInfo = newSubscriberInfo
@@ -415,33 +458,36 @@ class BackendTests: XCTestCase {
         let response = HTTPResponse(statusCode: 404, response: nil, error: nil)
         httpClient.mock(requestPath: "/subscribers/" + userID, response: response)
 
-        var error: Error?
+        var error: NSError?
 
         backend?.getSubscriberData(withAppUserID: userID, completion: { (newSubscriberInfo, newError) in
-            error = newError
+            error = newError as NSError?
         })
 
         expect(error).toEventuallyNot(beNil())
-        expect((error as NSError?)?.domain).to(equal(RCBackendErrorDomain))
-        expect((error as NSError?)?.code).to(equal(RCFinishableError))
+        expect(error?.domain).to(equal(PurchasesErrorDomain))
+        let underlyingError = (error?.userInfo[NSUnderlyingErrorKey]) as! NSError
+        expect(underlyingError).toEventuallyNot(beNil())
+        expect(underlyingError.domain).to(equal(RevenueCatBackendErrorDomain))
+        expect(error?.userInfo["finishable"]).to(be(true))
     }
 
     func testHandlesInvalidJSON() {
         let response = HTTPResponse(statusCode: 200, response: ["sjkaljdklsjadkjs": ""], error: nil)
         httpClient.mock(requestPath: "/subscribers/" + userID, response: response)
 
-        var error: Error?
+        var error: NSError?
 
         backend?.getSubscriberData(withAppUserID: userID, completion: { (newSubscriberInfo, newError) in
-            error = newError
+            error = newError as NSError?
         })
 
         expect(error).toEventuallyNot(beNil())
-        expect((error as NSError?)?.domain).to(equal(RCBackendErrorDomain))
-        expect((error as NSError?)?.code).to(equal(RCUnexpectedBackendResponse))
+        expect(error?.domain).to(equal(PurchasesErrorDomain))
+        expect(error?.code).to(be(PurchasesErrorCode.unexpectedBackendResponseError.rawValue))
     }
 
-    func testEmptyEligibiltyCheckDoesNothing() {
+    func testEmptyEligibilityCheckDoesNothing() {
         backend?.getIntroEligibility(forAppUserID: userID, receiptData: Data(), productIdentifiers: [], completion: { (eligibilities) in
 
         })
@@ -456,8 +502,8 @@ class BackendTests: XCTestCase {
         var eligibility: [String: RCIntroEligibility]?
 
         let products = ["producta", "productb", "productc", "productd"]
-        backend?.getIntroEligibility(forAppUserID: userID, receiptData: Data(), productIdentifiers: products, completion: {(productEligbility) in
-            eligibility = productEligbility
+        backend?.getIntroEligibility(forAppUserID: userID, receiptData: Data(1...3), productIdentifiers: products, completion: {(productEligibility) in
+            eligibility = productEligibility
         })
 
         expect(self.httpClient.calls.count).to(equal(1))
@@ -467,7 +513,7 @@ class BackendTests: XCTestCase {
             expect(path).to(equal("/subscribers/" + userID + "/intro_eligibility"))
             expect(call.HTTPMethod).to(equal("POST"))
             expect(call.headers!["Authorization"]).toNot(beNil())
-            expect(call.headers!["Authorization"]).to(equal("Basic " + apiKey))
+            expect(call.headers!["Authorization"]).to(equal("Bearer " + apiKey))
 
             expect(call.body).toNot(beNil())
             expect(call.body!["product_identifiers"] as? [String]).to(equal(products))
@@ -476,13 +522,13 @@ class BackendTests: XCTestCase {
 
         expect(eligibility).toEventuallyNot(beNil())
         expect(eligibility?.keys).toEventually(contain(products))
-        expect(eligibility!["producta"]!.status).toEventually(equal(RCIntroEligibityStatus.eligible))
-        expect(eligibility!["productb"]!.status).toEventually(equal(RCIntroEligibityStatus.ineligible))
-        expect(eligibility!["productc"]!.status).toEventually(equal(RCIntroEligibityStatus.unknown))
-        expect(eligibility!["productd"]!.status).toEventually(equal(RCIntroEligibityStatus.unknown))
+        expect(eligibility!["producta"]!.status).toEventually(equal(RCIntroEligibilityStatus.eligible))
+        expect(eligibility!["productb"]!.status).toEventually(equal(RCIntroEligibilityStatus.ineligible))
+        expect(eligibility!["productc"]!.status).toEventually(equal(RCIntroEligibilityStatus.unknown))
+        expect(eligibility!["productd"]!.status).toEventually(equal(RCIntroEligibilityStatus.unknown))
     }
 
-    func testEligbilityUnknownIfError() {
+    func testEligibilityUnknownIfError() {
         let response = HTTPResponse(statusCode: 499, response: serverErrorResponse, error: nil)
         let path = "/subscribers/" + userID + "/intro_eligibility"
         httpClient.mock(requestPath: path, response: response)
@@ -490,16 +536,16 @@ class BackendTests: XCTestCase {
         var eligibility: [String: RCIntroEligibility]?
 
         let products = ["producta", "productb", "productc"]
-        backend?.getIntroEligibility(forAppUserID: userID, receiptData: Data(), productIdentifiers: products, completion: {(productEligbility) in
-            eligibility = productEligbility
+        backend?.getIntroEligibility(forAppUserID: userID, receiptData: Data.init(1...2), productIdentifiers: products, completion: {(productEligibility) in
+            eligibility = productEligibility
         })
 
-        expect(eligibility!["producta"]!.status).toEventually(equal(RCIntroEligibityStatus.unknown))
-        expect(eligibility!["productb"]!.status).toEventually(equal(RCIntroEligibityStatus.unknown))
-        expect(eligibility!["productc"]!.status).toEventually(equal(RCIntroEligibityStatus.unknown))
+        expect(eligibility!["producta"]!.status).toEventually(equal(RCIntroEligibilityStatus.unknown))
+        expect(eligibility!["productb"]!.status).toEventually(equal(RCIntroEligibilityStatus.unknown))
+        expect(eligibility!["productc"]!.status).toEventually(equal(RCIntroEligibilityStatus.unknown))
     }
 
-    func testEligbilityUnknownIfUnknownError() {
+    func testEligibilityUnknownIfUnknownError() {
         let error = NSError(domain: "myhouse", code: 12, userInfo: nil) as Error
         let response = HTTPResponse(statusCode: 200, response: serverErrorResponse, error: error)
         let path = "/subscribers/" + userID + "/intro_eligibility"
@@ -508,13 +554,13 @@ class BackendTests: XCTestCase {
         var eligibility: [String: RCIntroEligibility]?
 
         let products = ["producta", "productb", "productc"]
-        backend?.getIntroEligibility(forAppUserID: userID, receiptData: Data(), productIdentifiers: products, completion: {(productEligbility) in
+        backend?.getIntroEligibility(forAppUserID: userID, receiptData: Data.init(1...2), productIdentifiers: products, completion: {(productEligbility) in
             eligibility = productEligbility
         })
 
-        expect(eligibility!["producta"]!.status).toEventually(equal(RCIntroEligibityStatus.unknown))
-        expect(eligibility!["productb"]!.status).toEventually(equal(RCIntroEligibityStatus.unknown))
-        expect(eligibility!["productc"]!.status).toEventually(equal(RCIntroEligibityStatus.unknown))
+        expect(eligibility!["producta"]!.status).toEventually(equal(RCIntroEligibilityStatus.unknown))
+        expect(eligibility!["productb"]!.status).toEventually(equal(RCIntroEligibilityStatus.unknown))
+        expect(eligibility!["productc"]!.status).toEventually(equal(RCIntroEligibilityStatus.unknown))
     }
 
     let noEntitlementsResponse = Dictionary<String, String>()
@@ -524,15 +570,38 @@ class BackendTests: XCTestCase {
         let path = "/subscribers/" + userID + "/products"
         httpClient.mock(requestPath: path, response: response)
 
-        var entitlements: [String : RCEntitlement]?
+        var entitlements: [String : Entitlement]?
 
-        backend?.getEntitlementsForAppUserID(userID, completion: { (newEntitlements) in
+        backend?.getEntitlementsForAppUserID(userID, completion: { (newEntitlements, error) in
             entitlements = newEntitlements
         })
 
         expect(self.httpClient.calls.count).toNot(equal(0))
         expect(entitlements).toEventuallyNot(beNil())
         expect(entitlements?.count).toEventually(equal(0))
+    }
+    
+    func testGetEntitlementsCachesForSameUserID() {
+        let response = HTTPResponse(statusCode: 200, response: noEntitlementsResponse, error: nil)
+        let path = "/subscribers/" + userID + "/products"
+        httpClient.mock(requestPath: path, response: response)
+        
+        backend?.getEntitlementsForAppUserID(userID, completion: { (newEntitlements, error) in })
+        backend?.getEntitlementsForAppUserID(userID, completion: { (newEntitlements, error) in })
+        
+        expect(self.httpClient.calls.count).to(equal(1))
+    }
+    
+    func testGetEntitlementsDoesntCacheForMultipleUserID() {
+        let response = HTTPResponse(statusCode: 200, response: noEntitlementsResponse, error: nil)
+        let userID2 = "user_id_2"
+        httpClient.mock(requestPath: "/subscribers/" + userID + "/products", response: response)
+        httpClient.mock(requestPath: "/subscribers/" + userID2 + "/products", response: response)
+        
+        backend?.getEntitlementsForAppUserID(userID, completion: { (newEntitlements, error) in })
+        backend?.getEntitlementsForAppUserID(userID2, completion: { (newEntitlements, error) in })
+        
+        expect(self.httpClient.calls.count).to(equal(2))
     }
 
     let oneEntitlementResponse = [
@@ -555,9 +624,9 @@ class BackendTests: XCTestCase {
         let path = "/subscribers/" + userID + "/products"
         httpClient.mock(requestPath: path, response: response)
 
-        var entitlements: [String : RCEntitlement]?
+        var entitlements: [String : Entitlement]?
 
-        backend?.getEntitlementsForAppUserID(userID, completion: { (newEntitlements) in
+        backend?.getEntitlementsForAppUserID(userID, completion: { (newEntitlements, error) in
             entitlements = newEntitlements
         })
 
@@ -575,9 +644,9 @@ class BackendTests: XCTestCase {
         let path = "/subscribers/" + userID + "/products"
         httpClient.mock(requestPath: path, response: response)
 
-        var entitlements: [String : RCEntitlement]?
+        var entitlements: [String : Entitlement]?
 
-        backend?.getEntitlementsForAppUserID(userID, completion: { (newEntitlements) in
+        backend?.getEntitlementsForAppUserID(userID, completion: { (newEntitlements, error) in
             entitlements = newEntitlements
         })
 
@@ -623,7 +692,7 @@ class BackendTests: XCTestCase {
         XCTAssertEqual(call.path, "/subscribers/" + userID + "/alias")
         XCTAssertEqual(call.HTTPMethod, "POST")
         XCTAssertNotNil(call.headers?["Authorization"])
-        XCTAssertEqual(call.headers?["Authorization"], "Basic " + apiKey)
+        XCTAssertEqual(call.headers?["Authorization"], "Bearer " + apiKey)
         
         expect(call.body?.keys).to(contain("new_app_user_id"))
 
@@ -631,4 +700,444 @@ class BackendTests: XCTestCase {
         XCTAssertEqual(postedData, "new_alias")
         expect(completionCalled).toEventually(beTrue())
     }
+
+    func testNetworkErrorIsForwardedForPurchaserInfoCalls() {
+        let response = HTTPResponse(statusCode: 200, response: nil, error: NSError(domain: NSURLErrorDomain, code: -1009))
+        httpClient.mock(requestPath: "/receipts", response: response)
+        var receivedError : NSError?
+        var receivedUnderlyingError : NSError?
+        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: true, productIdentifier: nil, price: nil,
+                                 paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil,
+                completion: { (purchaserInfo, error) in
+                    receivedError = error as NSError?
+                    receivedUnderlyingError = receivedError?.userInfo[NSUnderlyingErrorKey] as! NSError?
+                })
+
+        expect(receivedError).toEventuallyNot(beNil())
+        expect(receivedError?.domain).toEventually(equal(PurchasesErrorDomain))
+        expect(receivedError?.code).toEventually(equal(PurchasesErrorCode.networkError.rawValue))
+        expect(receivedUnderlyingError).toEventuallyNot(beNil())
+        expect(receivedUnderlyingError?.domain).toEventually(equal(NSURLErrorDomain))
+        expect(receivedUnderlyingError?.code).toEventually(equal(-1009))
+    }
+
+    func testNetworkErrorIsForwarded() {
+        let response = HTTPResponse(statusCode: 200, response: nil, error: NSError(domain: NSURLErrorDomain, code: -1009))
+        httpClient.mock(requestPath: "/subscribers/"+userID+"/alias", response: response)
+        var receivedError : NSError?
+        var receivedUnderlyingError : NSError?
+        backend?.createAlias(forAppUserID: userID, withNewAppUserID: "new", completion: { error in
+            receivedError = error as NSError?
+            receivedUnderlyingError = receivedError?.userInfo[NSUnderlyingErrorKey] as! NSError?
+        })
+
+        expect(receivedError).toEventuallyNot(beNil())
+        expect(receivedError?.domain).toEventually(equal(PurchasesErrorDomain))
+        expect(receivedError?.code).toEventually(equal(PurchasesErrorCode.networkError.rawValue))
+        expect(receivedUnderlyingError).toEventuallyNot(beNil())
+        expect(receivedUnderlyingError?.domain).toEventually(equal(NSURLErrorDomain))
+        expect(receivedUnderlyingError?.code).toEventually(equal(-1009))
+    }
+
+    func testForwards500ErrorsCorrectly() {
+        let response = HTTPResponse(statusCode: 501, response: serverErrorResponse, error: nil)
+        httpClient.mock(requestPath: "/subscribers/"+userID+"/alias", response: response)
+
+        var receivedError: NSError?
+        var receivedUnderlyingError: NSError?
+
+        backend?.createAlias(forAppUserID: userID, withNewAppUserID: "new", completion: { error in
+            receivedError = error as NSError?
+            receivedUnderlyingError = receivedError?.userInfo[NSUnderlyingErrorKey] as! NSError?
+        })
+
+        expect(receivedError).toEventuallyNot(beNil())
+        expect(receivedError?.code).toEventually(be(PurchasesErrorCode.invalidCredentialsError.rawValue))
+
+        expect(receivedUnderlyingError).toEventuallyNot(beNil())
+        expect(receivedUnderlyingError?.localizedDescription).to(equal(serverErrorResponse["message"]))
+    }
+
+    func testEligibilityUnknownIfNoReceipt() {
+        var eligibility: [String: RCIntroEligibility]?
+
+        let products = ["producta", "productb", "productc"]
+        backend?.getIntroEligibility(forAppUserID: userID, receiptData: Data(), productIdentifiers: products, completion: {(productEligibility) in
+            eligibility = productEligibility
+        })
+
+        expect(eligibility).toEventuallyNot(beNil())
+        expect(eligibility?["producta"]?.status).toEventually(equal(RCIntroEligibilityStatus.unknown))
+        expect(eligibility?["productb"]?.status).toEventually(equal(RCIntroEligibilityStatus.unknown))
+        expect(eligibility?["productc"]?.status).toEventually(equal(RCIntroEligibilityStatus.unknown))
+    }
+
+    func testGetEntitlementsNetworkErrorSendsNilAndError() {
+        let response = HTTPResponse(statusCode: 200, response: nil, error: NSError(domain: NSURLErrorDomain, code: -1009))
+        let path = "/subscribers/" + userID + "/products"
+        httpClient.mock(requestPath: path, response: response)
+
+        var receivedError : NSError?
+        var receivedUnderlyingError : NSError?
+        backend?.getEntitlementsForAppUserID(userID, completion: { (newEntitlements, error) in
+            receivedError = error as NSError?
+            receivedUnderlyingError = receivedError?.userInfo[NSUnderlyingErrorKey] as! NSError?
+        })
+
+        expect(receivedError).toEventuallyNot(beNil())
+        expect(receivedError?.domain).toEventually(equal(PurchasesErrorDomain))
+        expect(receivedError?.code).toEventually(equal(PurchasesErrorCode.networkError.rawValue))
+        expect(receivedUnderlyingError).toEventuallyNot(beNil())
+        expect(receivedUnderlyingError?.domain).toEventually(equal(NSURLErrorDomain))
+        expect(receivedUnderlyingError?.code).toEventually(equal(-1009))
+    }
+
+    func test500GetEntitlementsUnexpectedResponse() {
+        let response = HTTPResponse(statusCode: 501, response: serverErrorResponse, error: nil)
+        let path = "/subscribers/" + userID + "/products"
+        httpClient.mock(requestPath: path, response: response)
+
+        var receivedError: NSError?
+        var receivedUnderlyingError: NSError?
+        backend?.getEntitlementsForAppUserID(userID, completion: { (newEntitlements, error) in
+            receivedError = error as NSError?
+            receivedUnderlyingError = receivedError?.userInfo[NSUnderlyingErrorKey] as! NSError?
+        })
+
+        expect(receivedError).toEventuallyNot(beNil())
+        expect(receivedError?.code).toEventually(be(PurchasesErrorCode.invalidCredentialsError.rawValue))
+
+        expect(receivedUnderlyingError).toEventuallyNot(beNil())
+        expect(receivedUnderlyingError?.localizedDescription).to(equal(serverErrorResponse["message"]))
+    }
+    
+    func testDoesntCacheForDifferentDiscounts() {
+        let response = HTTPResponse(statusCode: 200, response: validSubscriberResponse, error: nil)
+        httpClient.mock(requestPath: "/receipts", response: response)
+        
+        var completionCalled = 0
+        
+        let isRestore = arc4random_uniform(2) == 0
+        
+        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: nil, completion: { (purchaserInfo, error) in
+            completionCalled += 1
+        })
+        
+        let discount = RCPromotionalOffer.init()
+        discount.offerIdentifier = "offerid"
+        discount.paymentMode = RCPaymentMode.payAsYouGo
+        discount.price = 12
+        
+        backend?.postReceiptData(receiptData, appUserID: userID, isRestore: isRestore, productIdentifier: nil, price: nil, paymentMode: RCPaymentMode.none, introductoryPrice: nil, currencyCode: nil, subscriptionGroup: nil, discounts: [discount], completion: { (purchaserInfo, error) in
+            completionCalled += 1
+        })
+        
+        expect(self.httpClient.calls.count).to(equal(2))
+        expect(completionCalled).toEventually(equal(2))
+    }
+    
+    func testPostsReceiptDataWithDiscountInfoCorrectly() {
+        let response = HTTPResponse(statusCode: 200, response: validSubscriberResponse, error: nil)
+        httpClient.mock(requestPath: "/receipts", response: response)
+        
+        let productIdentifier = "a_great_product"
+        let price = 4.99 as NSDecimalNumber
+        let group = "sub_group"
+        
+        let currencyCode = "BFD"
+        
+        let paymentMode = RCPaymentMode.none
+        
+        var completionCalled = false
+        
+        let discount = RCPromotionalOffer.init()
+        discount.offerIdentifier = "offerid"
+        discount.paymentMode = RCPaymentMode.payAsYouGo
+        discount.price = 12
+        
+        backend?.postReceiptData(receiptData, appUserID: userID,
+                                 isRestore: false,
+                                 productIdentifier: productIdentifier,
+                                 price: price, paymentMode: paymentMode,
+                                 introductoryPrice: nil,
+                                 currencyCode: currencyCode,
+                                 subscriptionGroup: group,
+                                 discounts: [discount],
+                                 completion: { (purchaserInfo, error) in
+                                    completionCalled = true
+        })
+        
+        let body: [String: Any] = [
+            "app_user_id": userID,
+            "fetch_token": receiptData.base64EncodedString(),
+            "is_restore": false,
+            "product_id": productIdentifier,
+            "price": price,
+            "currency": currencyCode,
+            "subscription_group_id": group,
+            "offers": [
+                "offer_identifier": "offerid",
+                "price": 12,
+                "payment_mode": 0
+            ]
+        ]
+        
+        let expectedCall = HTTPRequest(HTTPMethod: "POST", path: "/receipts",
+                                       body: body , headers: ["Authorization": "Bearer " + apiKey])
+        
+        expect(self.httpClient.calls.count).to(equal(1))
+        
+        if self.httpClient.calls.count > 0 {
+            let call = self.httpClient.calls[0]
+            
+            expect(call.path).to(equal(expectedCall.path))
+            expect(call.HTTPMethod).to(equal(expectedCall.HTTPMethod))
+            XCTAssert(call.body!.keys == expectedCall.body!.keys)
+            
+            expect(call.headers?["Authorization"]).toNot(beNil())
+            expect(call.headers?["Authorization"]).to(equal(expectedCall.headers?["Authorization"]))
+        }
+        
+        expect(completionCalled).toEventually(beTrue())
+    }
+    
+    func testOfferForSigningCorrectly() {
+        let validSigningResponse: [String: Any] = [
+            "offers": [
+                [
+                    "offer_id": "PROMO_ID",
+                    "product_id": "com.myapp.product_a",
+                    "key_id": "STEAKANDEGGS",
+                    "signature_data": [
+                        "signature": "Base64 encoded signature",
+                        "nonce": "A UUID",
+                        "timestamp": 123413232131
+                    ],
+                    "signature_error": nil
+                ]
+            ]
+        ]
+
+        let response = HTTPResponse(statusCode: 200, response: validSigningResponse, error: nil)
+        httpClient.mock(requestPath: "/offers", response: response)
+
+        let productIdentifier = "a_great_product"
+        let group = "sub_group"
+        var completionCalled = false
+        let offerIdentifier = "offerid"
+        let discountData = "an awesome discount".data(using: String.Encoding.utf8)!
+
+        backend?.postOffer(
+                forSigning: offerIdentifier,
+                withProductIdentifier: productIdentifier,
+                subscriptionGroup: group,
+                receiptData: discountData,
+                appUserID: userID) { signature, keyIdentifier, nonce, timestamp, error in
+                    completionCalled = true
+                }
+
+        let body: [String: Any] = [
+            "app_user_id": userID,
+            "fetch_token": discountData.base64EncodedString(),
+            "generate_offers": [
+                "offer_id": offerIdentifier,
+                "product_id": productIdentifier,
+                "subscription_group": group
+            ]
+        ]
+
+        let expectedCall = HTTPRequest(HTTPMethod: "POST", path: "/offers",
+                body: body, headers: ["Authorization": "Bearer " + apiKey])
+
+        expect(self.httpClient.calls.count).to(equal(1))
+
+        if self.httpClient.calls.count > 0 {
+            let call = self.httpClient.calls[0]
+
+            expect(call.path).to(equal(expectedCall.path))
+            expect(call.HTTPMethod).to(equal(expectedCall.HTTPMethod))
+            XCTAssert(call.body!.keys == expectedCall.body!.keys)
+
+            expect(call.headers?["Authorization"]).toNot(beNil())
+            expect(call.headers?["Authorization"]).to(equal(expectedCall.headers?["Authorization"]))
+        }
+
+        expect(completionCalled).toEventually(beTrue())
+    }
+    
+    func testOfferForSigningNetworkError() {
+        let response = HTTPResponse(statusCode: 200, response: nil, error: NSError(domain: NSURLErrorDomain, code: -1009))
+        httpClient.mock(requestPath: "/offers", response: response)
+
+        let productIdentifier = "a_great_product"
+        let group = "sub_group"
+        let offerIdentifier = "offerid"
+        let discountData = "an awesome discount".data(using: String.Encoding.utf8)!
+        var receivedError : NSError?
+        var receivedUnderlyingError : NSError?
+        
+        backend?.postOffer(
+                forSigning: offerIdentifier,
+                withProductIdentifier: productIdentifier,
+                subscriptionGroup: group,
+                receiptData: discountData,
+                appUserID: userID) { _, _, _, _, error in
+            receivedError = error as NSError?
+            receivedUnderlyingError = receivedError?.userInfo[NSUnderlyingErrorKey] as! NSError?
+        }
+
+        expect(receivedError).toEventuallyNot(beNil())
+        expect(receivedError?.domain).toEventually(equal(PurchasesErrorDomain))
+        expect(receivedError?.code).toEventually(equal(PurchasesErrorCode.networkError.rawValue))
+        expect(receivedUnderlyingError).toEventuallyNot(beNil())
+        expect(receivedUnderlyingError?.domain).toEventually(equal(NSURLErrorDomain))
+        expect(receivedUnderlyingError?.code).toEventually(equal(-1009))
+    }
+
+    func testOfferForSigningEmptyOffersResponse() {
+        let validSigningResponse: [String: Any] = [
+            "offers": []
+        ]
+
+        let response = HTTPResponse(statusCode: 200, response: validSigningResponse, error: nil)
+        httpClient.mock(requestPath: "/offers", response: response)
+
+        let productIdentifier = "a_great_product"
+        let group = "sub_group"
+        let offerIdentifier = "offerid"
+        let discountData = "an awesome discount".data(using: String.Encoding.utf8)!
+
+        var receivedError : NSError?
+        var receivedUnderlyingError : NSError?
+
+        backend?.postOffer(
+                forSigning: offerIdentifier,
+                withProductIdentifier: productIdentifier,
+                subscriptionGroup: group,
+                receiptData: discountData,
+                appUserID: userID) { signature, keyIdentifier, nonce, timestamp, error in
+            receivedError = error as NSError?
+            receivedUnderlyingError = receivedError?.userInfo[NSUnderlyingErrorKey] as! NSError?
+        }
+
+        expect(receivedError).toEventuallyNot(beNil())
+        expect(receivedError?.domain).toEventually(equal(PurchasesErrorDomain))
+        expect(receivedError?.code).toEventually(equal(PurchasesErrorCode.unexpectedBackendResponseError.rawValue))
+        expect(receivedUnderlyingError).toEventually(beNil())
+    }
+    
+    func testOfferForSigningSignatureErrorResponse() {
+        let validSigningResponse: [String: Any] = [
+            "offers": [
+                [
+                    "offer_id": "PROMO_ID",
+                    "product_id": "com.myapp.product_a",
+                    "key_id": "STEAKANDEGGS",
+                    "signature_data": nil,
+                    "signature_error": [
+                        "message": "Ineligible for some reason",
+                        "code": 7234
+                    ]
+                ]
+            ]
+        ]
+
+        let response = HTTPResponse(statusCode: 200, response: validSigningResponse, error: nil)
+        httpClient.mock(requestPath: "/offers", response: response)
+        
+        let productIdentifier = "a_great_product"
+        let group = "sub_group"
+        let offerIdentifier = "offerid"
+        let discountData = "an awesome discount".data(using: String.Encoding.utf8)!
+        
+        var receivedError : NSError?
+        var receivedUnderlyingError : NSError?
+        
+        backend?.postOffer(
+            forSigning: offerIdentifier,
+            withProductIdentifier: productIdentifier,
+            subscriptionGroup: group,
+            receiptData: discountData,
+            appUserID: userID) { signature, keyIdentifier, nonce, timestamp, error in
+                receivedError = error as NSError?
+                receivedUnderlyingError = receivedError?.userInfo[NSUnderlyingErrorKey] as! NSError?
+        }
+        
+        expect(receivedError).toEventuallyNot(beNil())
+        expect(receivedError?.domain).toEventually(equal(PurchasesErrorDomain))
+        expect(receivedError?.code).toEventually(equal(PurchasesErrorCode.invalidAppleSubscriptionKeyError.rawValue))
+        expect(receivedUnderlyingError).toEventuallyNot(beNil())
+        expect(receivedUnderlyingError?.code).toEventually(equal(7234))
+        expect(receivedUnderlyingError?.domain).toEventually(equal(RevenueCatBackendErrorDomain))
+        expect(receivedUnderlyingError?.localizedDescription).toEventually(equal("Ineligible for some reason"))
+    }
+    
+    func testOfferForSigningNoDataAndNoSignatureErrorResponse() {
+        let validSigningResponse: [String: Any] = [
+            "offers": [
+                [
+                    "offer_id": "PROMO_ID",
+                    "product_id": "com.myapp.product_a",
+                    "key_id": "STEAKANDEGGS",
+                    "signature_data": nil,
+                    "signature_error": nil
+                ]
+            ]
+        ]
+
+        let response = HTTPResponse(statusCode: 200, response: validSigningResponse, error: nil)
+        httpClient.mock(requestPath: "/offers", response: response)
+
+        let productIdentifier = "a_great_product"
+        let group = "sub_group"
+        let offerIdentifier = "offerid"
+        let discountData = "an awesome discount".data(using: String.Encoding.utf8)!
+
+        var receivedError : NSError?
+        var receivedUnderlyingError : NSError?
+
+        backend?.postOffer(
+                forSigning: offerIdentifier,
+                withProductIdentifier: productIdentifier,
+                subscriptionGroup: group,
+                receiptData: discountData,
+                appUserID: userID) { signature, keyIdentifier, nonce, timestamp, error in
+            receivedError = error as NSError?
+            receivedUnderlyingError = receivedError?.userInfo[NSUnderlyingErrorKey] as! NSError?
+        }
+
+        expect(receivedError).toEventuallyNot(beNil())
+        expect(receivedError?.domain).toEventually(equal(PurchasesErrorDomain))
+        expect(receivedError?.code).toEventually(equal(PurchasesErrorCode.unexpectedBackendResponseError.rawValue))
+        expect(receivedUnderlyingError).toEventually(beNil())
+
+    }
+
+    func testOfferForSigning501Response() {
+        let response = HTTPResponse(statusCode: 501, response: serverErrorResponse, error: nil)
+        httpClient.mock(requestPath: "/offers", response: response)
+        let productIdentifier = "a_great_product"
+        let group = "sub_group"
+        let offerIdentifier = "offerid"
+        let discountData = "an awesome discount".data(using: String.Encoding.utf8)!
+
+        var receivedError : NSError?
+        var receivedUnderlyingError : NSError?
+        backend?.postOffer(
+                forSigning: offerIdentifier,
+                withProductIdentifier: productIdentifier,
+                subscriptionGroup: group,
+                receiptData: discountData,
+                appUserID: userID) { signature, keyIdentifier, nonce, timestamp, error in
+                    receivedError = error as NSError?
+                    receivedUnderlyingError = receivedError?.userInfo[NSUnderlyingErrorKey] as! NSError?
+        }
+
+        expect(receivedError).toEventuallyNot(beNil())
+        expect(receivedError?.code).toEventually(be(PurchasesErrorCode.invalidCredentialsError.rawValue))
+
+        expect(receivedUnderlyingError).toEventuallyNot(beNil())
+        expect(receivedUnderlyingError?.localizedDescription).to(equal(serverErrorResponse["message"]))
+    }
+
 }

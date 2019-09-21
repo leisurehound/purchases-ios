@@ -3,7 +3,7 @@
 //  PurchasesTests
 //
 //  Created by Jacob Eiting on 9/28/17.
-//  Copyright © 2018 Purchases. All rights reserved.
+//  Copyright © 2019 RevenueCat, Inc. All rights reserved.
 //
 
 import XCTest
@@ -99,7 +99,7 @@ class HTTPClientTests: XCTestCase {
         let path = "/a_random_path"
         var headerPresent = false
 
-        stub(condition: hasHeaderNamed("X-Version", value: RCPurchases.frameworkVersion())) { request in
+        stub(condition: hasHeaderNamed("X-Version", value: Purchases.frameworkVersion())) { request in
             headerPresent = true
             return OHHTTPStubsResponse(data: Data.init(), statusCode:200, headers:nil)
         }
@@ -286,6 +286,23 @@ class HTTPClientTests: XCTestCase {
 
         expect(message).toEventually(equal("something is great up in the cloud"), timeout: 1.0)
         expect(successIsTrue).toEventually(beTrue(), timeout: 1.0)
+    }
+    
+    func testAlwaysPassesClientVersion() {
+        let path = "/a_random_path"
+        var headerPresent = false
+        
+        let version = "" // for unit tests the version will empty
+
+        stub(condition: hasHeaderNamed("X-Client-Version", value: version )) { request in
+            headerPresent = true
+            return OHHTTPStubsResponse(data: Data.init(), statusCode:200, headers:nil)
+        }
+        
+        self.client.performRequest("POST", path: path, body: Dictionary.init(),
+                                   headers: ["test_header": "value"], completionHandler:nil)
+        
+        expect(headerPresent).toEventually(equal(true))
     }
 }
 

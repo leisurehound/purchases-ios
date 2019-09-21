@@ -1,3 +1,43 @@
+## 2.6.0
+- Deprecates `activeEntitlements` in `RCPurchaserInfo` and adds `entitlements` object to `RCPurchaserInfo`. For more info look into https://docs.revenuecat.com/docs/purchaserinfo
+
+## 2.5.0
+- **BREAKING CHANGE**: fixed a typo in `addAttributionData` Swift's name.
+- Error logs for AppsFlyer if using deprecated `rc_appsflyer_id`
+- Error logs for AppsFlyer if missing networkUserID
+
+## 2.4.0
+- **BUGFIX**: `userId` parameter in identify is not nullable anymore.
+- **DEPRECATION**: `automaticAttributionCollection` is now deprecated in favor of `automaticAppleSearchAdsAttributionCollection` since it's a more clear name.
+- **NEW FEATURE**: UIKitForMac support.
+- **NEW FEATURE**: Facebook Ads Attribution support https://docs.revenuecat.com/docs/facebook-ads.
+
+## 2.3.0
+- `addAttribution` is now a class method that can be called before the SDK is configured.
+- `addAttribution` will automatically add the `rc_idfa` and `rc_idfv` parameters if the `AdSupport` and `UIKit` frameworks are included, respectively.
+- A network user identifier can be send to the `addAttribution` function, replacing the previous `rc_appsflyer_id` parameter.
+- Apple Search Ad attribution can be automatically collected by setting the `automaticAttributionCollection` boolean to `true` before the SDK is configured.
+- Adds an optional configuration boolean `observerMode`. This will set the value of `finishTransactions` at configuration time.
+- Header updates to include client version which will be used for debugging and reporting in the future.
+
+## 2.2.0
+- Adds subscription offers
+
+## 2.1.1
+- Avoid refreshing receipt everytime restore is called
+
+## 2.1.0
+- Adds userCancelled as a parameter to the completion block of the makePurchase function.
+- Better error codes.
+
+## 2.0.0
+- Refactor to all block based methods
+- Optional delegate method to receive changes in Purchaser Info
+- Ability to turn on detailed logging by setting `debugLogsEnabled`
+
+## 1.2.1
+- Adds support for Tenjin
+
 ## 1.2.0
 - Singleton management handled by the SDK
 - Adds reset, identify and create alias calls

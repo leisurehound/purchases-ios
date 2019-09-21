@@ -3,7 +3,7 @@
 //  PurchasesTests
 //
 //  Created by Jacob Eiting on 9/29/17.
-//  Copyright © 2018 Purchases. All rights reserved.
+//  Copyright © 2019 RevenueCat, Inc. All rights reserved.
 //
 
 import XCTest
@@ -36,6 +36,11 @@ class MockProduct: SKProduct {
     override var productIdentifier: String {
         return self.mockProductIdentifier
     }
+    
+    var mockSubscriptionGroupIdentifier: String?
+    override var subscriptionGroupIdentifier: String? {
+        return self.mockSubscriptionGroupIdentifier;
+    }
 
     override var priceLocale: Locale {
         return Locale.current
@@ -48,6 +53,16 @@ class MockProduct: SKProduct {
     @available(iOS 11.2, *)
     override var introductoryPrice: SKProductDiscount? {
         return MockDiscount()
+    }
+    
+    var mockDiscountIdentifier: String?
+    @available(iOS 12.2, *)
+    override var discounts: [SKProductDiscount] {
+        if (mockDiscountIdentifier != nil) {
+            return [MockProductDiscount(mockIdentifier: mockDiscountIdentifier!)];
+        } else {
+            return []
+        }
     }
 }
 
@@ -83,7 +98,7 @@ class StoreKitRequestFetcher: XCTestCase {
 
         override func start() {
             startCalled = true
-            DispatchQueue.global(qos: .background).async {
+            DispatchQueue.main.async {
                 if (self.fails) {
                     self.delegate?.request!(self, didFailWithError: StoreKitError.unknown)
                 } else {
@@ -98,7 +113,7 @@ class StoreKitRequestFetcher: XCTestCase {
         var fails = false
         override func start() {
             startCalled = true
-            DispatchQueue.global(qos: .background).async {
+            DispatchQueue.main.async {
                 if (self.fails) {
                     self.delegate?.request!(self, didFailWithError: StoreKitError.unknown)
                 } else {
@@ -179,6 +194,22 @@ class StoreKitRequestFetcher: XCTestCase {
         setupFetcher(fails: false)
         expect(self.products).toEventuallyNot(beNil(), timeout: 1.0)
         expect(self.products?.count).toEventually(be(1), timeout: 1.0)
+    }
+    
+    func testReusesRequestsForSameProducts() {
+        setupFetcher(fails: false)
+        
+        var callbackCount = 0
+        self.fetcher!.fetchProducts(["com.a.product", "com.b.product"]) { (newProducts) in
+            callbackCount += 1
+        }
+        
+        self.fetcher!.fetchProducts(["com.a.product", "com.b.product"]) { (newProducts) in
+            callbackCount += 1
+        }
+        
+        expect(self.factory?.requests).to(haveCount(3))
+        expect(callbackCount).toEventually(equal(2))
     }
 
     func testFetchesReceipt() {

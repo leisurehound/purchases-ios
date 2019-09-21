@@ -5,6 +5,7 @@
 #include <Purchases/RCHTTPClient.h>
 #include <Purchases/RCPurchases+Protected.h>
 #include <Purchases/RCStoreKitRequestFetcher.h>
+#include <Purchases/RCReceiptFetcher.h>
 #include <Purchases/RCStoreKitWrapper.h>
 #include <Purchases/RCBackend.h>
 #include <Purchases/RCPurchaserInfo.h>
@@ -14,3 +15,8 @@
 #include <Purchases/RCOffering.h>
 #include <Purchases/RCOffering+Protected.h>
 #include <Purchases/RCIntroEligibility+Protected.h>
+#include <Purchases/RCAttributionFetcher.h>
+#include <Purchases/RCAttributionData.h>
+#include <Purchases/RCPromotionalOffer+Protected.h>
+#include <Purchases/RCEntitlementInfo.h>
+#include <Purchases/RCEntitlementInfos.h>
